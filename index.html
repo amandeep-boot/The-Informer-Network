@@ -1,148 +1,136 @@
-const apiKey='<NEWS_API_KEY>'; 
-let url = `https://newsapi.org/v2/everything?q=&pageSize=100&apiKey=${apiKey}`
-const constUrl = `https://newsapi.org/v2/top-headlines?country=in&pageSize=100&apiKey=${apiKey}`
-const baseUrl='https://newsapi.org/v2/';
-let userUrl;
-const searchButton=document.getElementById('searchButton');
-searchButton.addEventListener('click',()=>{
-    const inputField=document.getElementById('inputField');
-    if(inputField.value.length>0){
-        userUrl=`https://newsapi.org/v2/everything?q=${inputField.value.toLowerCase()}&pageSize=100&apiKey=${apiKey}`;
-        displayNews(userUrl);
-    }
+<!DOCTYPE html>
+<html lang="en">
 
-})
-const input = document.getElementById('inputField');
-input.addEventListener('keypress', (event)=> {
-    if(event.key === "Enter"){
-        userUrl=`https://newsapi.org/v2/everything?q=${inputField.value.toLowerCase()}&pageSize=100&apiKey=${apiKey}`;
-        if(input.value.length){displayNews(userUrl);}
-    }
-})
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>aluGhantaTimes</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
 
-async function fetchNews(apiurl){
-    try{
-        const response=await fetch(apiurl);
-        const data=await response.json();
-        return data.articles;
-    }catch(error){
-        console.error('Error fetching the news:', error);
-    }
-}
-let i=0;
- async function displayNews(url){ 
-    let articles= await fetchNews(url);
-    const newsContainer1=document.getElementById('news-article1');
-    newsContainer1.innerHTML='';
-    const newsContainer2=document.getElementById('news-article2');
-    console.log(newsContainer2)
-    newsContainer2.innerHTML='';
-    articles.forEach(article => {
-        const articleElement = document.createElement('div');
-        // articleElement.classList.add('news-article');
-        articleElement.innerHTML = `
-         <a href="${article.url}" target="_blank" class="my-5 " style="color:black">
-            <img src="${article.urlToImage}" class="col-12 pt-5 pb-3" alt="News Image">
-            <p class="m-3 small font-italic">${new Date(article.publishedAt)}</p>
-            <h3 class="pl-3" >${article.title}</h3>
-            <p class="pl-3 mb-0">${article.description}
-            <div class="bg-dark mx-3 mt-1 w-100" style="height: 2px;"></div>
-            </p>
-            <!-- <a href="${article.url}" target="_blank" >Read more</a>-->
-        </a>
-        `;
-       if(article.urlToImage){
-       if(i%2==0){
-        newsContainer1.appendChild(articleElement);
-        }
-        else{
-            newsContainer2.appendChild(articleElement);  
-        }
-  }
-  i++;
-    });
+<body>
+  <header class="sticky-top mx-auto">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4 py-3 ">
+      <a class="navbar-brand font-weight-bold font-italic" href="#">The News Express</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-}
-async function displayCategories() {
-    const categoryContainer=document.getElementById('category-container');
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto px-3">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          </li>
 
-    categoryContainer.innerHTML = '';
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="true">
+              Hot Topics
+            </a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" id="topic-1">Finance</a>
+              <a class="dropdown-item" id="topic-2">Politics</a>
+              <a class="dropdown-item" id="topic-3">Entertainment</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" id="topic-4">sports</a>
+              <a class="dropdown-item" id="topic-5">Technology</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Donate</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link " href="#">Contact Us</a>
+          </li>
+        </ul>
+        <div class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" id="inputField" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-light my-2 my-sm-0" id="searchButton" type="submit">Search</button>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <div class="news-container row">
 
-    let categoryArray = ['Finance', 'Politics', 'Entertainment', 'Sports', 'Crime', 'Business', 'technology', 'lifestyle', 'Health', 'Education']
-    let categories = await fetchNews(constUrl);
+    <div id="news-article" class="news-article col-12 col-md-8 row ml-2 ">
+      <div id="news-article1" class="col-12 col-md-8 ">dss</div>
+      <div id="news-article2" class="col-12 col-md-4 ">ssdfs</div>
+    </div>
+    <div class="news-category position-relative   col-12 col-md-4 m-0 ">
+      <div id="category-container" class="position-sticky container  top-0"></div>
+    </div>
 
-    while (categoryArray.length > 0) {
-        let indexNumber = Math.floor(Math.random() * categoryArray.length);
-        let category = categoryArray[indexNumber];
-        categoryArray.splice(indexNumber, 1);
-        console.log(category);
-
-        let categoryUrl = `https://newsapi.org/v2/everything?q=${category.toLowerCase()}&pageSize=1&apiKey=${apiKey}`;
-
-        try {
-            let categoryItems = await fetchNews(categoryUrl);
-            categoryItems.forEach(item => {
-                let itemUrl = item.url;
-                let itemImg = item.urlToImage;
-                let itemDate = new Date(item.publishedAt);
-                let itemTitle = item.title;
-
-                const categoryCard = document.createElement('div');
-                categoryCard.setAttribute('id',`${category}`)
-                categoryCard.classList.add('categoryCard', 'col-12', 'mx-0', 'my-2', 'bg-light','d-flex', 'rounded');
-                categoryCard.innerHTML =
-                    `<a href="#" class="row">
-                    <img src="${itemImg}" class="categoryImg h-auto pr-2 rounded">
-            <div class="categoryText ">
-                <p class="m-1 text-danger font-weight-bold">${category}</p>
-                <p class="m-1">${itemTitle}</p>
-                <p class="m-1 small font-italic">${itemDate}</p>
-            </div></a>`
-                // `<h3>${category}</h3>`;
-                categoryCard.addEventListener('click',()=>{
-                    let newsUrl=`https://newsapi.org/v2/everything?q=${categoryCard.id}&pageSize=10&apiKey=${apiKey}`;
-                    displayNews(newsUrl);
-                })
-
-                categoryContainer.appendChild(categoryCard);
-            });
-        }
-        catch(error){
-            console.error(error);
-        }
-    }
-
-}
-function displayTopicNews()
-{
-    let topic1 = document.getElementById('topic-1');
-    topic1.addEventListener('click', ()=> {
-        let topicUrl = `https://newsapi.org/v2/everything?q=${topic1.innerHTML.toLowerCase()}&pageSize=10&apiKey=${apiKey}`;
-        displayNews(topicUrl);
-    })
-    let topic2 = document.getElementById("topic-2");
-    topic2.addEventListener('click', ()=> {
-        let topicUrl = `https://newsapi.org/v2/everything?q=${topic2.innerHTML.toLowerCase()}&pageSize=10&apiKey=${apiKey}`;
-        displayNews(topicUrl);
-    })
-    let topic3 = document.getElementById("topic-3");
-    topic3.addEventListener('click', ()=> {
-        let topicUrl = `https://newsapi.org/v2/everything?q=${topic3.innerHTML.toLowerCase()}&pageSize=10&apiKey=${apiKey}`;
-        displayNews(topicUrl);
-    })
-    let topic4 = document.getElementById("topic-4");
-    topic4.addEventListener('click', ()=> {
-        let topicUrl = `https://newsapi.org/v2/everything?q=${topic4.innerHTML.toLowerCase()}&pageSize=10&apiKey=${apiKey}`;
-        displayNews(topicUrl);
-    })
-    let topic5 = document.getElementById("topic-5");
-    topic5.addEventListener('click', ()=> {
-        let topicUrl = `https://newsapi.org/v2/everything?q=${topic5.innerHTML.toLowerCase()}&pageSize=10&apiKey=${apiKey}`;
-        displayNews(topicUrl);
-    })
-}
+  </div>
 
 
-displayNews(constUrl);
-displayCategories();
-displayTopicNews();
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+
+        <!-- About Us and Policies -->
+        <div class="col-md-4">
+          <h5>About Us</h5>
+          <p><a href="#">About Us</a></p>
+          <p><a href="#">Contact</a></p>
+          <p><a href="#">Privacy Policy</a></p>
+          <p><a href="#">Terms of Service</a></p>
+          <p><a href="#">Cookie Policy</a></p>
+        </div>
+
+        <!-- Navigation and Engagement -->
+        <div class="col-md-4">
+          <h5>Navigation</h5>
+          <p><a href="#">Site Map</a></p>
+          <p><a href="#">Newsletter Signup</a></p>
+          <p><a href="#">Latest News</a></p>
+          <p><a href="#">Trending Stories</a></p>
+          <p><a href="#">Archives</a></p>
+        </div>
+
+        <!-- Social Media and Legal -->
+        <div class="col-md-4">
+          <h5>Follow Us</h5>
+          <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+          <h5 class="mt-4">Legal</h5>
+          <p><a href="#">Advertise with Us</a></p>
+          <p><a href="#">Careers</a></p>
+          <p><a href="#">Accessibility Statement</a></p>
+          <p><a href="#">Affiliate Disclosure</a></p>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-12 text-center">
+          <p>© 2024 aluGhantaTimes. All Rights Reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+
+
+
+  <script src="script.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+  
+</body>
+
+</html>
