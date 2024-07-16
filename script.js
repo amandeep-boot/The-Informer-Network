@@ -1,83 +1,70 @@
-
-const home = document.getElementById('home');
-const logo = document.getElementById('logo');
-const newsContainer1 = document.getElementById('top-news-container1');
-const newsContainer2 = document.getElementById('top-news-container2');
-const categoryContainer = document.getElementById('category-container');
-const apiKey = '<ENTER YOUR API KEY>';
-const constUrl = `https://newsapi.org/v2/top-headlines?country=in&pageSize=10&apiKey=${apiKey}`;
-const inputKeyword = document.getElementById('inputKeyword');
-const submitKeyword = document.getElementById('submitKeyword');
-
-
-home.addEventListener('click', () => {
-    displayTopNews(constUrl);
-})
-logo.addEventListener('click', () => {
-    displayTopNews(constUrl);
-})
-
-
-async function fetchNews(url) {
-    try {
-        const response = await fetch(url);
-        if (response.ok) {
-            const data = await response.json();
-            return data.articles;
-        }
-        else {
-            newsContainer1.innerHTML = `<p>Failed to load news</p>`;
-            newsContainer2.innerHTML = `<p>Failed to load news</p>`;
-            categoryContainer.innerHTML = `<p>Failed to load news</p>`;
-        }
-        throw Error('News not loded!!!')
+const apiKey='<NEWS_API_KEY>'; 
+let url = `https://newsapi.org/v2/everything?q=&pageSize=100&apiKey=${apiKey}`
+const constUrl = `https://newsapi.org/v2/top-headlines?country=in&pageSize=100&apiKey=${apiKey}`
+const baseUrl='https://newsapi.org/v2/';
+let userUrl;
+const searchButton=document.getElementById('searchButton');
+searchButton.addEventListener('click',()=>{
+    const inputField=document.getElementById('inputField');
+    if(inputField.value.length>0){
+        userUrl=`https://newsapi.org/v2/everything?q=${inputField.value.toLowerCase()}&pageSize=100&apiKey=${apiKey}`;
+        displayNews(userUrl);
     }
-    catch (error) {
-        console.error(error);
+
+})
+const input = document.getElementById('inputField');
+input.addEventListener('keypress', (event)=> {
+    if(event.key === "Enter"){
+        userUrl=`https://newsapi.org/v2/everything?q=${inputField.value.toLowerCase()}&pageSize=100&apiKey=${apiKey}`;
+        if(input.value.length){displayNews(userUrl);}
     }
-};
+})
 
-async function displayTopNews(Url) {
-    newsContainer1.innerHTML = '';
-    newsContainer2.innerHTML = '';
-
-    let articles = await fetchNews(Url);
-    let i = 0;
-
-    articles.forEach(article => {
-        console.log(article.title);
-        const newsItem = document.createElement('div');
-        newsItem.classList.add('newsItem', 'col-12', 'mx-auto', 'my-1', 'p-3');
-
-        if (articles.length === 0) {
-            newsContainer1.innerHTML = '<p>Try using another keyword.</p>';
-            return;
-        }
-
-        newsItem.innerHTML =
-            `<img src=${article.urlToImage} alt="News Image" class="newsImage ml-0">
-            <div class="">
-            <p class="small font-italic">${new Date(article.publishedAt)}</p>
-            <h3>${article.title}</h3>
-            <p>${article.description}</p>
-            <a href="${article.url}" target="_blank" class="btn btn-outline-primary px-3 py-1">Read More</a>
-        </div>
-        <div class="w-100 mt-3" style="height: 2px; background-color:#b49898;"></div>
-`
-
-        if (article.urlToImage) {
-            if (i % 2 == 0) {
-                newsContainer1.appendChild(newsItem);
-            }
-            else {
-                newsContainer2.appendChild(newsItem);
-            }
-        }
-        i++;
-    });
+async function fetchNews(apiurl){
+    try{
+        const response=await fetch(apiurl);
+        const data=await response.json();
+        return data.articles;
+    }catch(error){
+        console.error('Error fetching the news:', error);
+    }
 }
+let i=0;
+ async function displayNews(url){ 
+    let articles= await fetchNews(url);
+    const newsContainer1=document.getElementById('news-article1');
+    newsContainer1.innerHTML='';
+    const newsContainer2=document.getElementById('news-article2');
+    console.log(newsContainer2)
+    newsContainer2.innerHTML='';
+    articles.forEach(article => {
+        const articleElement = document.createElement('div');
+        // articleElement.classList.add('news-article');
+        articleElement.innerHTML = `
+         <a href="${article.url}" target="_blank" class="my-5 " style="color:black">
+            <img src="${article.urlToImage}" class="col-12 pt-5 pb-3" alt="News Image">
+            <p class="m-3 small font-italic">${new Date(article.publishedAt)}</p>
+            <h3 class="pl-3" >${article.title}</h3>
+            <p class="pl-3 mb-0">${article.description}
+            <div class="bg-dark mx-3 mt-1 w-100" style="height: 2px;"></div>
+            </p>
+            <!-- <a href="${article.url}" target="_blank" >Read more</a>-->
+        </a>
+        `;
+       if(article.urlToImage){
+       if(i%2==0){
+        newsContainer1.appendChild(articleElement);
+        }
+        else{
+            newsContainer2.appendChild(articleElement);  
+        }
+  }
+  i++;
+    });
 
+}
 async function displayCategories() {
+    const categoryContainer=document.getElementById('category-container');
 
     categoryContainer.innerHTML = '';
 
@@ -101,89 +88,61 @@ async function displayCategories() {
                 let itemTitle = item.title;
 
                 const categoryCard = document.createElement('div');
-                categoryCard.classList.add('categoryCard', 'col-12', 'mx-0', 'my-2', 'p-1', 'bg-light', 'rounded');
-                categoryCard.setAttribute('id', `${category}`)
+                categoryCard.setAttribute('id',`${category}`)
+                categoryCard.classList.add('categoryCard', 'col-12', 'mx-0', 'my-2', 'bg-light','d-flex', 'rounded');
                 categoryCard.innerHTML =
-                    `
-                      <a class="row col-12" href='#top-news-container1'><img src="${itemImg}" class="categoryImg h-auto">
-                    <div class="categoryText">
-                        <p class="m-1 text-danger font-weight-bold">${category}</p>
-                        <p class="m-1">${itemTitle}</p>
-                        <p class="m-1 small font-italic">${itemDate}</p>
-                    </div><a>`
-
-                    categoryCard.addEventListener('click', () => {
-                        let userUrl = `https://newsapi.org/v2/everything?q=${categoryCard.id}&pageSize=10&apiKey=${apiKey}`
-                
-                        displayTopNews(userUrl);
-                    })
+                    `<a href="#" class="row">
+                    <img src="${itemImg}" class="categoryImg h-auto pr-2 rounded">
+            <div class="categoryText ">
+                <p class="m-1 text-danger font-weight-bold">${category}</p>
+                <p class="m-1">${itemTitle}</p>
+                <p class="m-1 small font-italic">${itemDate}</p>
+            </div></a>`
+                // `<h3>${category}</h3>`;
+                categoryCard.addEventListener('click',()=>{
+                    let newsUrl=`https://newsapi.org/v2/everything?q=${categoryCard.id}&pageSize=10&apiKey=${apiKey}`;
+                    displayNews(newsUrl);
+                })
 
                 categoryContainer.appendChild(categoryCard);
             });
         }
-        catch (error) {
+        catch(error){
             console.error(error);
         }
     }
 
 }
-
-async function displayTopicNews()
+function displayTopicNews()
 {
     let topic1 = document.getElementById('topic-1');
     topic1.addEventListener('click', ()=> {
         let topicUrl = `https://newsapi.org/v2/everything?q=${topic1.innerHTML.toLowerCase()}&pageSize=10&apiKey=${apiKey}`;
-        displayTopNews(topicUrl);
+        displayNews(topicUrl);
     })
     let topic2 = document.getElementById("topic-2");
     topic2.addEventListener('click', ()=> {
         let topicUrl = `https://newsapi.org/v2/everything?q=${topic2.innerHTML.toLowerCase()}&pageSize=10&apiKey=${apiKey}`;
-        displayTopNews(topicUrl);
+        displayNews(topicUrl);
     })
     let topic3 = document.getElementById("topic-3");
     topic3.addEventListener('click', ()=> {
         let topicUrl = `https://newsapi.org/v2/everything?q=${topic3.innerHTML.toLowerCase()}&pageSize=10&apiKey=${apiKey}`;
-        displayTopNews(topicUrl);
+        displayNews(topicUrl);
     })
     let topic4 = document.getElementById("topic-4");
     topic4.addEventListener('click', ()=> {
         let topicUrl = `https://newsapi.org/v2/everything?q=${topic4.innerHTML.toLowerCase()}&pageSize=10&apiKey=${apiKey}`;
-        displayTopNews(topicUrl);
+        displayNews(topicUrl);
     })
     let topic5 = document.getElementById("topic-5");
     topic5.addEventListener('click', ()=> {
         let topicUrl = `https://newsapi.org/v2/everything?q=${topic5.innerHTML.toLowerCase()}&pageSize=10&apiKey=${apiKey}`;
-        displayTopNews(topicUrl);
+        displayNews(topicUrl);
     })
 }
 
-document.addEventListener('DOMContentLoaded', () => {
 
-    displayTopNews(constUrl);
-
-    submitKeyword.addEventListener('click', () => {
-        if(inputKeyword.value.length > 0){
-            let userUrl = `https://newsapi.org/v2/everything?q=${inputKeyword.value}&pageSize=10&apiKey=${apiKey}`;
-            if(userUrl.length === 0){
-                displayTopNews(constUrl);
-                return;
-            }
-            displayTopNews(userUrl);
-        }
-    });
-
-    inputKeyword.addEventListener('keypress', (event)=> {
-        if(event.key === "Enter"){
-            let userUrl=`https://newsapi.org/v2/everything?q=${inputKeyword.value.toLowerCase()}&pageSize=100&apiKey=${apiKey}`;
-            if(inputKeyword.value.length){
-                displayTopNews(userUrl);
-            }
-        }
-    })
-    
-    displayCategories();
-
-    
-    displayTopicNews();
-
-});
+displayNews(constUrl);
+displayCategories();
+displayTopicNews();
