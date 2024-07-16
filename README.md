@@ -1,6 +1,6 @@
-# **The Informer Network**
+# **The News Express**
 
-The Informer Network is a dynamic web application designed to keep users in rhythm with the latest news from around the world. Leveraging the power of the NewsAPI, this platform provides up-to-date headlines and articles across various categories, making it an essential tool for staying informed.
+The News Express is a dynamic web application designed to keep users in rhythm with the latest news from around the world. Leveraging the power of the NewsAPI, this platform provides up-to-date headlines and articles across various categories, making it an essential tool for staying informed.
 
 ## **Features**
 
@@ -17,7 +17,7 @@ The Informer Network is a dynamic web application designed to keep users in rhyt
 ![PC View](screenshots/pc-view.png)
 
 ### Phone View
-![Phone View](screenshots/phone-view.png)
+![Phone View](screenshots/phone1.png)  ![Phone View](screenshots/phone2.png)
 
 ## **Technology Stack**
 
@@ -41,9 +41,9 @@ The Informer Network is a dynamic web application designed to keep users in rhyt
    
 2. **Add your NewsAPI key:**
     - Open `script.js` in a text editor.
-    - Replace `<ENTER YOUR API KEY>` with your actual NewsAPI key:
+    - Replace `<NEWS_API_KEY>` with your actual NewsAPI key:
     ```javascript
-    const apiKey = '<ENTER YOUR API KEY>';
+    const apiKey = '<NEWS_API_KEY>';
     ```
 3. **Open `index.html` in your preferred web browser:**
     - Open `index.html` in your code-editor (try using VS-code with extension live-server installed).
@@ -58,4 +58,4 @@ The Informer Network is a dynamic web application designed to keep users in rhyt
 - **Real-time Updates:** Implement real-time news updates using WebSockets.
 
 
-### Stay informed with The Informer Network!
+### Stay informed with The News Express!
