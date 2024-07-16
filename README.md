@@ -17,7 +17,8 @@ The News Express is a dynamic web application designed to keep users in rhythm w
 ![PC View](screenshots/pc-view.png)
 
 ### Phone View
-![Phone View](screenshots/phone1.png)            ![Phone View](screenshots/phone2.png)
+![Phone View](screenshots/phone1.png)            
+![Phone View](screenshots/phone2.png)
 
 ## **Technology Stack**
 
